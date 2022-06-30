@@ -1,4 +1,11 @@
 # glycovid_PubChem
+## RDF schema
+![RDF schema](img/schema.png)
+
+## Content
+```
+# Scrape PubChem data resorces
+python rdf.py
 
 ## Purpose
 PubChemサイトのcovid19ページからプロジェクトで必要なデータである遺伝子、タンパク質、パスウェイの情報をcsvファイルとしてダウンロードする。次にそのファイルからRDFを作るために不必要なデータを削除し整形する。最後に、ファイルを種類別に統合させて一つのファイルにする。それぞれの過程を実行するプログラムをPythonの言語によって実装した。
