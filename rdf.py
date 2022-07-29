@@ -254,17 +254,17 @@ def curate_file_conmma_inquote(d_today):
 def make_csv_for_togo(d_today):
     # csv内の文字列を分割する必要のあるcolumnsのdict
     columns_dict = {
-        'data/' + d_today + '/dir/bioactivity_gene': [],
-        "data/" + d_today + "/dir/bioassay": ["pmids"],
-        "data/" + d_today + "/dir/chembldrug": ["pmids", "dois"],
-        "data/" + d_today + "/dir/ctdchemicalgene": ["pmids"],
-        "data/" + d_today + "/dir/dgidb": ["pmids", "dois"],
-        "data/" + d_today + "/dir/drugbank": ["pmids", "dois"],
+        # 'data/' + d_today + '/dir/bioactivity_gene': [],
+        # "data/" + d_today + "/dir/bioassay": ["pmids"],
+        # "data/" + d_today + "/dir/chembldrug": ["pmids", "dois"],
+        # "data/" + d_today + "/dir/ctdchemicalgene": ["pmids"],
+        # "data/" + d_today + "/dir/dgidb": ["pmids", "dois"],
+        # "data/" + d_today + "/dir/drugbank": ["pmids", "dois"],
         "data/" + d_today + "/dir/gene_disease": ["pmids", "dois"],
-        "data/" + d_today + "/dir/gtopdb": ["pmids", "dois"],
-        "data/" + d_today + "/dir/pathwaygene": ["pmids"],
-        "data/" + d_today + "/dir/pathwayreaction": ["pmids"],
-        "data/" + d_today + "/dir/pdb": ["pmids", "dois"]
+        # "data/" + d_today + "/dir/gtopdb": ["pmids", "dois"],
+        # "data/" + d_today + "/dir/pathwaygene": ["pmids"],
+        # "data/" + d_today + "/dir/pathwayreaction": ["pmids"],
+        # "data/" + d_today + "/dir/pdb": ["pmids", "dois"]
     }
     # RDF作成上必要のないcolumnsのdict
     droplist = [
@@ -278,7 +278,7 @@ def make_csv_for_togo(d_today):
             "drugclaimname", "drugclaimprimaryname"],
         ["genesymbol", "drugtype", "druggroup", "drugaction", "targettype", "targetid",
             "targetcomponent", "targetcomponentname", "generalfunc", "specificfunc"],
-        ["genesymbol", "diseasesrcdb", "directevidence"],
+        ["genesymbol", "directevidence"],
         ["ligand", "primarytarget", "type", "action", "units",
             "affinity", "targetname", "targetspecies", "genesymbol"],
         ["pwtype", "category", "srcid", "extid", "core", "cids",
@@ -296,7 +296,7 @@ def make_csv_for_togo(d_today):
         for file_name in file_list:
             print(file_name)
             df = pd.read_csv(file_name)
-            df = df.drop(droplist[i], axis=1)
+            # df = df.drop(droplist[i], axis=1)
             new_df = pd.DataFrame(columns=df.columns)
 
             for index in tqdm(df.index, desc=file_name):
@@ -402,9 +402,32 @@ def curate_csv_file(d_today):
         print('Done: ', file_list[i])
 
 
+# goidからmeshidにつながるデータを取得
+def filter_MeSH_in_gene_disease(path, d_today):
+    file_path = "data/"+d_today+"/dir/gene_disease_s.csv"
+    f = open(file_path)
+    contents = f.read()
+    rows = contents.split("\n")
+    new_contents = ""
+    for row in rows:
+        if row == "":
+            continue
+        cols = row.split(",")
+        if cols[2] == "MeSH":
+            # covid-19のIDを新しいものに変換
+            new_contents += cols[0] + "," + cols[3].replace("C000657245", "D000086382")
+            new_contents += "\n"
+    f = open("data/"+d_today+"/dir/gene_disease_s_mesh.csv", "w")
+    f.write(new_contents)
+
+
+
+
+
+
 if __name__ == "__main__":
     d_today = str(datetime.date.today())
-    d_today = '2021-10-14'
+    d_today = '2022-07-22'
     path = '/Users/Kouiti/local_file/glycovid/glycovid_PubChem/'
 
     # get_new_gene_file(d_today, path)
@@ -415,5 +438,6 @@ if __name__ == "__main__":
     # delete_patywayreaction_in_pathwaygene_deirectory(d_today)
     # curate_file_conmma_inquote(d_today)
     # make_csv_for_togo(d_today)
+    filter_MeSH_in_gene_disease(path, d_today)
 
-    curate_csv_file(d_today)
+    # curate_csv_file(d_today)

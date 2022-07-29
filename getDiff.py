@@ -133,7 +133,22 @@ if __name__ == '__main__':
     ]
 
     # main(file_list)
-    countrow(file_list)
+    # countrow(file_list)
 
     # get_genedir_diff()
     # get_rownum_of_genelist()
+
+    f = open("data/2022-07-22/dir/gene_disease_s.csv")
+    srcdb = {}
+    contents = f.read()
+    rows = contents.split("\n")
+    for row in rows:
+        cols = row.split(",")
+        if len(cols) < 2:
+            continue
+        try:
+            srcdb[cols[2]] += 1
+        except:
+            srcdb[cols[2]] = 0
+    print(srcdb)
+
